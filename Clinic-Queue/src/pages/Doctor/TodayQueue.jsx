@@ -18,6 +18,10 @@ function TodayQueue() {
                 headers: { Authorization: "Bearer " + token },
             });
             console.log("Doctor Queue API response:", res.data);
+            console.log("FULL DATA:", res.data);
+            console.log("FIRST ITEM:", res.data[0]);
+            console.log("APPOINTMENT:", res.data[0]?.appointment);
+            console.log("PATIENT:", res.data[0]?.appointment?.patient);
             setQueue(res.data);
         } catch (err) {
             console.error("Error fetching queue", err);
@@ -45,10 +49,10 @@ function TodayQueue() {
                         {queue.map(item => (
                             <tr key={item.id} style={styles.tr}>
                                 <td style={styles.td}>{item.tokenNumber}</td>
-                                <td style={styles.td}>{item.appointment?.patient?.name || item.patient?.name || "Unknown"}</td>
-                                <td style={styles.td}>{item.appointment?.timeSlot || item.timeSlot || "—"}</td>
+                                <td style={styles.td}>{item.appointment?.patient?.name || item.patient?.name || item?.patientName || "Unknown"}</td>
+                                <td style={styles.td}>{item.appointment?.patient?.timeSlot || item.appointment?.timeSlot || item.appointment?.timeSlot || item?.timeSlot || "—"}</td>
                                 <td style={styles.td}>
-                                    <span style={{...styles.badge, ...getBadgeStyle(item.status)}}>
+                                    <span style={{ ...styles.badge, ...getBadgeStyle(item.status) }}>
                                         {item.status || "waiting"}
                                     </span>
                                 </td>
@@ -71,9 +75,9 @@ function TodayQueue() {
 }
 
 const getBadgeStyle = (status) => {
-    switch(status) {
+    switch (status) {
         case 'waiting': return { backgroundColor: '#fff3cd', color: '#856404' };
-        case 'in_progress': 
+        case 'in_progress':
         case 'in-progress': return { backgroundColor: '#cce5ff', color: '#004085' };
         case 'done': return { backgroundColor: '#d4edda', color: '#155724' };
         case 'skipped': return { backgroundColor: '#e2e3e5', color: '#383d41' };
